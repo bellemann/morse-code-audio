@@ -1,0 +1,15 @@
+{
+  "name": "morse-code-audio",
+  "version": "0.1.0",
+  "description": "Morse code in JavaScript: translate text, build ITU timing with Farnsworth spacing, render WAV audio, and decode Morse from recorded or live audio. No dependencies.",
+  "type": "module",
+  "exports": "./index.js",
+  "files": ["index.js"],
+  "scripts": { "test": "node --test test/" },
+  "keywords": ["morse", "morse-code", "cw", "ham-radio", "audio", "decoder", "goertzel", "wav", "farnsworth", "koch"],
+  "homepage": "https://morsecodefree.com",
+  "repository": { "type": "git", "url": "git+https://github.com/bellemann/morse-code-audio.git" },
+  "bugs": "https://github.com/bellemann/morse-code-audio/issues",
+  "license": "MIT",
+  "engines": { "node": ">=18" }
+}
