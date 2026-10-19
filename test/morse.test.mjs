@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  encode, decode, isMorse, translate, normalizeMorse, timing, schedule, render, wav, decodeAudio, detectTone, CODE, PROSIGNS, KOCH, kochReady,
+  encode, decode, isMorse, translate, normalizeMorse, timing, schedule, render, wav, decodeAudio, detectTone, CODE, PROSIGNS, KOCH, kochReady, tapper,
 } from "../index.js";
 
 // Deterministic generator (mulberry32) and Gaussian noise for repeatable signal tests.
@@ -182,4 +182,17 @@ test("Koch advances at 90% of the last 20 answers", () => {
   assert.equal(kochReady([...Array(18).fill(true), false, false]), true);
   assert.equal(kochReady([...Array(17).fill(true), false, false, false]), false);
   assert.equal(kochReady([false, false, false, ...Array(20).fill(true)]), true);
+});
+
+test("hand key reader tells dots from dashes and learns the speed", () => {
+  // A slow beginner (0.2 s dots) and a 20 WPM operator, both with uneven timing.
+  for (const [dot, wobble] of [[0.2, 0.3], [0.06, 0.2]]) {
+    const r = seeded(7);
+    const t = tapper();
+    let sent = "";
+    for (const code of encode("PARIS PARIS").morse.replace(/[ /]/g, "")) sent += t.press((code === "." ? dot : 3 * dot) * (1 + (r() - 0.5) * wobble));
+    const paris = encode("PARIS").morse.replace(/ /g, "");
+    assert.equal(sent.slice(-paris.length), paris, `dot ${dot}`);
+    assert.ok(Math.abs(t.unit - dot) / dot < 0.2, `unit ${t.unit} for dot ${dot}`);
+  }
 });

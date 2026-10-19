@@ -325,3 +325,36 @@ export function kochReady(results) {
   const last = results.slice(-20);
   return last.length === 20 && last.filter(Boolean).length >= 18;
 }
+
+// ---------- Hand key ----------
+
+/**
+ * Live reader for a hand-operated key. press(seconds) says whether a key-down was a dot or a dash and learns the
+ * sender's speed; unit, letterGap and wordGap (seconds) tell the page when a pause ends a letter or a word.
+ * Dots and dashes are split halfway (geometrically) between the shortest and longest of the last 12 presses;
+ * until both kinds have been seen, the split stays where it was (0.2 s at the start).
+ * ponytail: a hold longer than 0.8 s counts as 0.8 s, so one long hold cannot drag the split up for long.
+ */
+export function tapper() {
+  const recent = [];
+  let split = 0.2;
+  const mean = (a) => a.reduce((s, x) => s + x, 0) / a.length;
+  const self = {
+    press(sec) {
+      recent.push(Math.min(sec, 0.8));
+      if (recent.length > 12) recent.shift();
+      const lo = Math.min(...recent), hi = Math.max(...recent);
+      if (hi / lo > 2) split = Math.sqrt(lo * hi);
+      return sec < split ? "." : "-";
+    },
+    get unit() {
+      const dots = recent.filter((x) => x < split), dashes = recent.filter((x) => x >= split).map((x) => x / 3);
+      const kinds = [dots, dashes].filter((a) => a.length).map(mean);
+      return kinds.length ? mean(kinds) : split / 2;
+    },
+    get wpm() { return Math.round(1.2 / self.unit); },
+    get letterGap() { return 2.5 * self.unit; },
+    get wordGap() { return 6 * self.unit; },
+  };
+  return self;
+}

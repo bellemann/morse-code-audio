@@ -108,6 +108,21 @@ KOCH.slice(0, 2);       // ["K", "M"]: the order most trainers use, one new char
 kochReady(lastAnswers); // true after 20 answers with at least 18 right: add the next character
 ```
 
+## Hand key
+
+Read a telegraph key, a space bar or a touch button. `tapper()` tells dots from dashes and learns the sender's speed as they go.
+
+```js
+import { tapper } from "morse-code-audio";
+
+const key = tapper();
+key.press(0.07);   // "." : seconds the key was held
+key.press(0.21);   // "-"
+key.wpm;           // about 17 after a few letters
+key.letterGap;     // seconds of silence that end a letter
+key.wordGap;       // seconds of silence that end a word
+```
+
 ## Test
 
 ```sh

@@ -1,6 +1,6 @@
 {
   "name": "morse-code-audio",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Morse code in JavaScript: translate text, build ITU timing with Farnsworth spacing, render WAV audio, and decode Morse from recorded or live audio. No dependencies.",
   "type": "module",
   "exports": "./index.js",
